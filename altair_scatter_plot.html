@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@5.8.0"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"name": "data-3eb3082affce5d30ef6f25fdfecfa032"}, "mark": {"type": "circle"}, "encoding": {"color": {"field": "State", "type": "nominal"}, "size": {"field": "Average_Annual_Rainfall_mm", "title": "Average Rainfall (mm)", "type": "quantitative"}, "tooltip": [{"field": "State", "type": "nominal"}, {"field": "Population_Density", "type": "quantitative"}, {"field": "Forest_Cover_sqkm", "type": "quantitative"}, {"field": "Average_Annual_Rainfall_mm", "type": "quantitative"}], "x": {"field": "Population_Density", "scale": {"type": "log"}, "title": "Population Density", "type": "quantitative"}, "y": {"field": "Forest_Cover_sqkm", "title": "Forest Cover (sq km)", "type": "quantitative"}}, "height": 500, "params": [{"name": "param_1", "select": {"type": "interval", "encodings": ["x", "y"]}, "bind": "scales"}], "title": "Population Density vs. Forest Cover", "width": 800, "$schema": "https://vega.github.io/schema/vega-lite/v5.8.0.json", "datasets": {"data-3eb3082affce5d30ef6f25fdfecfa032": [{"State": "Andhra Pradesh", "Population_Density": 308, "Forest_Cover_sqkm": 37380, "Average_Annual_Rainfall_mm": 900, "Latitude": 15.9179, "Longitude": 80.1539}, {"State": "Arunachal Pradesh", "Population_Density": 17, "Forest_Cover_sqkm": 51540, "Average_Annual_Rainfall_mm": 2780, "Latitude": 28.21, "Longitude": 94.7278}, {"State": "Assam", "Population_Density": 398, "Forest_Cover_sqkm": 28327, "Average_Annual_Rainfall_mm": 1900, "Latitude": 26.2006, "Longitude": 92.9376}, {"State": "Bihar", "Population_Density": 1106, "Forest_Cover_sqkm": 1687, "Average_Annual_Rainfall_mm": 1200, "Latitude": 25.0961, "Longitude": 85.313}, {"State": "Chhattisgarh", "Population_Density": 189, "Forest_Cover_sqkm": 55717, "Average_Annual_Rainfall_mm": 1400, "Latitude": 21.2787, "Longitude": 81.8661}, {"State": "Goa", "Population_Density": 394, "Forest_Cover_sqkm": 2405, "Average_Annual_Rainfall_mm": 2900, "Latitude": 15.2993, "Longitude": 74.124}, {"State": "Gujarat", "Population_Density": 308, "Forest_Cover_sqkm": 14757, "Average_Annual_Rainfall_mm": 800, "Latitude": 22.2587, "Longitude": 71.1924}, {"State": "Haryana", "Population_Density": 573, "Forest_Cover_sqkm": 1588, "Average_Annual_Rainfall_mm": 600, "Latitude": 29.0588, "Longitude": 76.0856}, {"State": "Himachal Pradesh", "Population_Density": 123, "Forest_Cover_sqkm": 15433, "Average_Annual_Rainfall_mm": 1500, "Latitude": 31.1048, "Longitude": 77.1734}, {"State": "Jharkhand", "Population_Density": 414, "Forest_Cover_sqkm": 23721, "Average_Annual_Rainfall_mm": 1400, "Latitude": 23.6102, "Longitude": 85.2799}, {"State": "Karnataka", "Population_Density": 319, "Forest_Cover_sqkm": 38575, "Average_Annual_Rainfall_mm": 1100, "Latitude": 15.3173, "Longitude": 75.7139}, {"State": "Kerala", "Population_Density": 860, "Forest_Cover_sqkm": 21144, "Average_Annual_Rainfall_mm": 3000, "Latitude": 10.8505, "Longitude": 76.2711}, {"State": "Madhya Pradesh", "Population_Density": 236, "Forest_Cover_sqkm": 77482, "Average_Annual_Rainfall_mm": 1200, "Latitude": 22.9734, "Longitude": 78.6569}, {"State": "Maharashtra", "Population_Density": 365, "Forest_Cover_sqkm": 50778, "Average_Annual_Rainfall_mm": 1000, "Latitude": 19.7515, "Longitude": 75.7139}, {"State": "Manipur", "Population_Density": 128, "Forest_Cover_sqkm": 17219, "Average_Annual_Rainfall_mm": 2500, "Latitude": 24.6637, "Longitude": 93.9062}, {"State": "Meghalaya", "Population_Density": 132, "Forest_Cover_sqkm": 17260, "Average_Annual_Rainfall_mm": 3000, "Latitude": 25.467, "Longitude": 91.833}, {"State": "Mizoram", "Population_Density": 52, "Forest_Cover_sqkm": 18749, "Average_Annual_Rainfall_mm": 2500, "Latitude": 23.1645, "Longitude": 92.9376}, {"State": "Nagaland", "Population_Density": 119, "Forest_Cover_sqkm": 13197, "Average_Annual_Rainfall_mm": 2000, "Latitude": 26.1584, "Longitude": 94.5624}, {"State": "Odisha", "Population_Density": 270, "Forest_Cover_sqkm": 51619, "Average_Annual_Rainfall_mm": 1500, "Latitude": 20.9517, "Longitude": 85.0985}, {"State": "Punjab", "Population_Density": 551, "Forest_Cover_sqkm": 1845, "Average_Annual_Rainfall_mm": 700, "Latitude": 31.1471, "Longitude": 75.3412}, {"State": "Rajasthan", "Population_Density": 200, "Forest_Cover_sqkm": 16655, "Average_Annual_Rainfall_mm": 500, "Latitude": 27.0238, "Longitude": 74.2179}, {"State": "Sikkim", "Population_Density": 86, "Forest_Cover_sqkm": 3343, "Average_Annual_Rainfall_mm": 3000, "Latitude": 27.533, "Longitude": 88.5122}, {"State": "Tamil Nadu", "Population_Density": 555, "Forest_Cover_sqkm": 26909, "Average_Annual_Rainfall_mm": 1000, "Latitude": 11.1271, "Longitude": 78.6569}, {"State": "Telangana", "Population_Density": 312, "Forest_Cover_sqkm": 21214, "Average_Annual_Rainfall_mm": 900, "Latitude": 18.1124, "Longitude": 79.0193}, {"State": "Tripura", "Population_Density": 350, "Forest_Cover_sqkm": 7726, "Average_Annual_Rainfall_mm": 2500, "Latitude": 23.9408, "Longitude": 91.9882}, {"State": "Uttar Pradesh", "Population_Density": 829, "Forest_Cover_sqkm": 16583, "Average_Annual_Rainfall_mm": 1000, "Latitude": 26.8467, "Longitude": 80.9462}, {"State": "Uttarakhand", "Population_Density": 189, "Forest_Cover_sqkm": 24303, "Average_Annual_Rainfall_mm": 1600, "Latitude": 30.0668, "Longitude": 79.0193}, {"State": "West Bengal", "Population_Density": 1028, "Forest_Cover_sqkm": 16805, "Average_Annual_Rainfall_mm": 1750, "Latitude": 22.9868, "Longitude": 87.855}]}};
+      var embedOpt = {"mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>
