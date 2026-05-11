@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Geospatial Economic Forecasts</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #20242a;
+        }
+        .leaflet-container {
+            overflow: hidden;
+            position: relative;
+            outline-offset: 1px;
+        }
+        .leaflet-pane,
+        .leaflet-tile,
+        .leaflet-marker-icon,
+        .leaflet-marker-shadow,
+        .leaflet-tile-container,
+        .leaflet-pane > svg,
+        .leaflet-pane > canvas,
+        .leaflet-zoom-box,
+        .leaflet-image-layer,
+        .leaflet-layer {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .leaflet-tile {
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        .leaflet-control-container .leaflet-top,
+        .leaflet-control-container .leaflet-bottom {
+            position: absolute;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        .leaflet-top {
+            top: 0;
+        }
+        .leaflet-left {
+            left: 0;
+        }
+        .leaflet-control {
+            position: relative;
+            z-index: 800;
+            pointer-events: auto;
+        }
+        .leaflet-left .leaflet-control {
+            margin-left: 10px;
+        }
+        .leaflet-top .leaflet-control {
+            margin-top: 10px;
+        }
+        header {
+            background: #17324d;
+            color: white;
+            padding: 24px 32px;
+        }
+        main {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        .layout {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        form, .map-panel, table, .empty {
+            background: white;
+            border: 1px solid #dfe3e8;
+        }
+        form {
+            padding: 18px;
+        }
+        label {
+            display: block;
+            font-weight: 700;
+            margin: 12px 0 6px;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #b9c1ca;
+            font: inherit;
+            background: white;
+        }
+        .helptext {
+            display: block;
+            margin-top: 4px;
+            color: #5b6673;
+            font-size: 13px;
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .checkbox-row label {
+            margin: 0;
+            font-weight: 400;
+        }
+        button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 11px 14px;
+            border: 0;
+            background: #1c6b4f;
+            color: white;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .delete-form {
+            padding: 0;
+            border: 0;
+            background: transparent;
+        }
+        .delete-button {
+            width: auto;
+            margin: 0;
+            padding: 8px 10px;
+            background: #b42318;
+            font-size: 14px;
+        }
+        .messages {
+            margin-bottom: 16px;
+        }
+        .message {
+            padding: 10px 12px;
+            background: #eef7f1;
+            border: 1px solid #bad9c4;
+        }
+        .message.warning {
+            background: #fff8e5;
+            border-color: #e3cf8b;
+        }
+        .map-panel {
+            min-width: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        #map {
+            height: 520px;
+            width: 100%;
+            background: #e7ecef;
+        }
+        .map-status {
+            padding: 10px 12px;
+            border-top: 1px solid #dfe3e8;
+            color: #4f5b66;
+            font-size: 14px;
+        }
+        .section-title {
+            margin: 0 0 12px;
+        }
+        .table-wrap {
+            margin-top: 24px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #dfe3e8;
+            text-align: left;
+        }
+        th {
+            background: #edf1f5;
+            font-size: 14px;
+        }
+        .empty {
+            padding: 24px;
+        }
+        .source-button {
+            width: auto;
+            margin: 0 0 18px;
+            padding: 10px 14px;
+            background: #315f86;
+        }
+        .modal-backdrop {
+            align-items: center;
+            background: rgba(10, 20, 30, 0.55);
+            display: none;
+            inset: 0;
+            justify-content: center;
+            padding: 24px;
+            position: fixed;
+            z-index: 2000;
+        }
+        .modal-backdrop.is-open {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+            max-height: 86vh;
+            max-width: 760px;
+            overflow-y: auto;
+            padding: 22px;
+            width: min(100%, 760px);
+        }
+        .modal-header {
+            align-items: center;
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .modal-close {
+            background: #5d6670;
+            margin: 0;
+            padding: 8px 12px;
+            width: auto;
+        }
+        .modal ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .modal li {
+            margin: 8px 0;
+            line-height: 1.45;
+        }
+        a {
+            color: #0d5cab;
+        }
+        @media (max-width: 860px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Geospatial Economic Forecasts</h1>
+    </header>
+    <main>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="layout">
+            <section>
+                <h2 class="section-title">Create Forecast</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+
+                    <label for="{{ form.forecast_level.id_for_label }}">Forecast level</label>
+                    {{ form.forecast_level }}
+
+                    <div id="state-field">
+                        <label for="{{ form.state_name.id_for_label }}">State</label>
+                        {{ form.state_name }}
+                    </div>
+
+                    <div id="district-field">
+                        <label for="{{ form.district_name.id_for_label }}">District</label>
+                        {{ form.district_name }}
+                    </div>
+
+                    <label for="{{ form.vegetation_index_avg.id_for_label }}">NDVI (Normalized Difference Vegetation Index)</label>
+                    {{ form.vegetation_index_avg }}
+                    <span class="helptext">{{ form.vegetation_index_avg.help_text }}</span>
+
+                    <label for="{{ form.nightlight_intensity.id_for_label }}">Nightlight intensity</label>
+                    {{ form.nightlight_intensity }}
+                    <span class="helptext">{{ form.nightlight_intensity.help_text }}</span>
+
+                    <label for="{{ form.capital_formation_proxy.id_for_label }}">Capital formation proxy</label>
+                    {{ form.capital_formation_proxy }}
+                    <span class="helptext">{{ form.capital_formation_proxy.help_text }}</span>
+
+                    <div class="checkbox-row">
+                        {{ form.fetch_boundary }}
+                        <label for="{{ form.fetch_boundary.id_for_label }}">
+                            Fetch district boundary from OpenStreetMap
+                        </label>
+                    </div>
+
+                    <button type="submit">Create forecast</button>
+                </form>
+            </section>
+
+            <section class="map-panel">
+                <div id="map"></div>
+                <div id="map-status" class="map-status">Map is ready. Click a district marker to select it in the form.</div>
+            </section>
+        </div>
+
+        <button id="open-sources" class="source-button" type="button">Open Source Input Data</button>
+
+        <div id="source-modal" class="modal-backdrop" aria-hidden="true">
+            <section class="modal" role="dialog" aria-modal="true" aria-labelledby="source-modal-title">
+                <div class="modal-header">
+                    <h2 id="source-modal-title">Where To Find Open Input Data</h2>
+                    <button id="close-sources" class="modal-close" type="button">Close</button>
+                </div>
+            <ul>
+                <li>
+                    <strong>NDVI (Normalized Difference Vegetation Index):</strong>
+                    use NASA Earthdata vegetation index products such as
+                    <a href="https://www.earthdata.nasa.gov/data/catalog/lpcloud-mod13q1-061" target="_blank" rel="noopener">MODIS MOD13Q1</a>,
+                    or use
+                    <a href="https://www.copernicus.eu/en/access-data" target="_blank" rel="noopener">Copernicus Sentinel data</a>
+                    and calculate NDVI as area average.
+                </li>
+                <li>
+                    <strong>Nightlight intensity:</strong>
+                    use
+                    <a href="https://www.earthdata.nasa.gov/learn/backgrounders/nighttime-lights" target="_blank" rel="noopener">NASA Earthdata Nighttime Lights</a>
+                    or
+                    <a href="https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/science-domain/nighttime-lights/" target="_blank" rel="noopener">NASA Black Marble/VIIRS products</a>
+                    and calculate area average radiance.
+                </li>
+                <li>
+                    <strong>Capital formation proxy:</strong>
+                    use state-level tables from the
+                    <a href="https://www.rbi.org.in/Scripts/AnnualPublications.aspx?head=Handbook+of+Statistics+on+Indian+States" target="_blank" rel="noopener">RBI Handbook of Statistics on Indian States</a>
+                    or national capital formation tables from
+                    <a href="https://www.mospi.gov.in/gross-capital-formation-gross-fixed-capital-formation-net-capital-stock-economic-activity-current-1" target="_blank" rel="noopener">MoSPI</a>.
+                    For district-level work, use the closest available official proxy consistently.
+                </li>
+            </ul>
+            </section>
+        </div>
+
+        {% if forecasts %}
+            <p><a href="{% url 'map_data_api' %}">View GeoJSON API</a></p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Area</th>
+                            <th>Level</th>
+                            <th>Date</th>
+                            <th>Yield</th>
+                            <th>Nightlight</th>
+                            <th>NDVI</th>
+                            <th>Capital Formation</th>
+                            <th>Plain Meaning</th>
+                            <th>Source</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for forecast in forecasts %}
+                            <tr>
+                                <td>
+                                    {% if forecast.area_level == "state" %}
+                                        {{ forecast.district.name }}
+                                    {% else %}
+                                        {{ forecast.district.name }}, {{ forecast.district.state }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ forecast.get_area_level_display }}</td>
+                                <td>{{ forecast.prediction_date }}</td>
+                                <td>{{ forecast.predicted_yield }}</td>
+                                <td>{{ forecast.nightlight_intensity }}</td>
+                                <td>{{ forecast.vegetation_index_avg }}</td>
+                                <td>{{ forecast.capital_formation_proxy }}</td>
+                                <td>
+                                    For {{ forecast.district.name }}, the app estimates a
+                                    {{ forecast.get_area_level_display|lower }} predicted yield of
+                                    {{ forecast.predicted_yield }} metric tons using the entered NDVI,
+                                    nightlight, and capital formation values.
+                                </td>
+                                <td>
+                                    {{ forecast.data_source }}.
+                                    Methodology: predicted yield =
+                                    (NDVI x 100) + (capital formation x 0.02) +
+                                    (nightlight intensity x 0.3).
+                                </td>
+                                <td>
+                                    <form
+                                        class="delete-form"
+                                        method="post"
+                                        action="{% url 'delete_forecast' forecast.id %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button class="delete-button" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty">
+                No forecasts yet. Use the form to enter a district and real observed input values.
+            </div>
+        {% endif %}
+    </main>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const mapStatus = document.getElementById("map-status");
+        const districtMapPoints = {{ district_map_points|safe }};
+        const openSourcesButton = document.getElementById("open-sources");
+        const closeSourcesButton = document.getElementById("close-sources");
+        const sourceModal = document.getElementById("source-modal");
+
+        function openSourceModal() {
+            sourceModal.classList.add("is-open");
+            sourceModal.setAttribute("aria-hidden", "false");
+            closeSourcesButton.focus();
+        }
+
+        function closeSourceModal() {
+            sourceModal.classList.remove("is-open");
+            sourceModal.setAttribute("aria-hidden", "true");
+            openSourcesButton.focus();
+        }
+
+        openSourcesButton.addEventListener("click", openSourceModal);
+        closeSourcesButton.addEventListener("click", closeSourceModal);
+        sourceModal.addEventListener("click", (event) => {
+            if (event.target === sourceModal) {
+                closeSourceModal();
+            }
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && sourceModal.classList.contains("is-open")) {
+                closeSourceModal();
+            }
+        });
+
+        if (!window.L) {
+            mapStatus.textContent = "The map library could not load. Check your internet connection and refresh.";
+        } else {
+            const map = L.map("map", {
+                zoomControl: true,
+                scrollWheelZoom: true
+            }).setView([22.9734, 78.6569], 5);
+
+            const tiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 18,
+                attribution: "&copy; OpenStreetMap contributors"
+            });
+            tiles.addTo(map);
+            tiles.on("tileerror", () => {
+                mapStatus.textContent = "Map tiles could not be loaded. Check your internet connection, but saved forecast shapes or markers can still appear.";
+            });
+
+            setTimeout(() => map.invalidateSize(), 250);
+
+            const districtSelect = document.getElementById("id_district_name");
+            const stateSelect = document.getElementById("id_state_name");
+            const forecastLevelSelect = document.getElementById("id_forecast_level");
+            const districtField = document.getElementById("district-field");
+            const stateField = document.getElementById("state-field");
+            const ndviInput = document.getElementById("id_vegetation_index_avg");
+            const nightlightInput = document.getElementById("id_nightlight_intensity");
+            const capitalInput = document.getElementById("id_capital_formation_proxy");
+
+            function updateLevelFields() {
+                const isStateLevel = forecastLevelSelect.value === "state";
+                stateField.style.display = isStateLevel ? "block" : "none";
+                districtField.style.display = isStateLevel ? "none" : "block";
+            }
+
+            forecastLevelSelect.addEventListener("change", updateLevelFields);
+            updateLevelFields();
+
+            function selectAreaFromMap(level, value, label) {
+                forecastLevelSelect.value = level;
+                updateLevelFields();
+                if (level === "state") {
+                    stateSelect.value = value;
+                    stateSelect.dispatchEvent(new Event("change"));
+                    stateSelect.focus();
+                } else {
+                    districtSelect.value = value;
+                    districtSelect.dispatchEvent(new Event("change"));
+                    districtSelect.focus();
+                }
+                mapStatus.textContent = `${label} selected for ${level}-level forecast. Enter the input values and create the forecast.`;
+            }
+
+            const baseDistrictLayer = L.layerGroup().addTo(map);
+            districtMapPoints.forEach((point) => {
+                const marker = L.circleMarker([point.lat, point.lon], {
+                    radius: 5,
+                    color: "#506070",
+                    fillColor: "#ffffff",
+                    fillOpacity: 0.85,
+                    weight: 1
+                }).addTo(baseDistrictLayer);
+                marker.bindTooltip(`Click to select ${point.label} (${point.level} level)`, {
+                    sticky: true,
+                    direction: "top"
+                });
+                marker.on("click", () => {
+                    selectAreaFromMap(point.level, point.value, point.label);
+                });
+            });
+
+            fetch("{% url 'map_data_api' %}")
+                .then((response) => response.json())
+                .then((data) => {
+                    const layer = L.geoJSON(data, {
+                        style: {
+                            color: "#1c6b4f",
+                            weight: 2,
+                            fillColor: "#69b58f",
+                            fillOpacity: 0.35
+                        },
+                        pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+                            radius: 9,
+                            color: "#1c6b4f",
+                            fillColor: "#69b58f",
+                            fillOpacity: 0.9
+                        }),
+                        onEachFeature: (feature, mapLayer) => {
+                            const p = feature.properties;
+                            const popup = `
+                                <strong>${p.area_label}</strong><br>
+                                ${p.result_sentence}<br>
+                                NDVI (Normalized Difference Vegetation Index): ${p.vegetation_index_avg}<br>
+                                Nightlight: ${p.nightlight_intensity}<br>
+                                Capital: ${p.capital_formation_proxy}<br>
+                                Location source: ${p.boundary_source || "District center marker"}
+                            `;
+                            mapLayer.bindTooltip(popup, {
+                                sticky: true,
+                                direction: "top",
+                                opacity: 0.95
+                            });
+                            mapLayer.on("click", () => {
+                                selectAreaFromMap(p.area_level, p.area_value, p.area_label);
+                                ndviInput.value = p.vegetation_index_avg;
+                                nightlightInput.value = p.nightlight_intensity;
+                                capitalInput.value = p.capital_formation_proxy;
+                                mapStatus.textContent = `${p.area_label} selected. The form has been filled with the saved ${p.area_level}-level forecast inputs.`;
+                            });
+                        }
+                    }).addTo(map);
+
+                    if (layer.getLayers().length) {
+                        map.fitBounds(layer.getBounds(), {padding: [24, 24], maxZoom: 10});
+                        setTimeout(() => map.invalidateSize(), 250);
+                        mapStatus.textContent = "Click any district marker to select it. Hover over forecast markers for details.";
+                    } else {
+                        map.setView([22.9734, 78.6569], 5);
+                        mapStatus.textContent = "No forecasts yet. Click a district marker or use the dropdown form to create one.";
+                    }
+                })
+                .catch(() => {
+                    mapStatus.textContent = "Forecast map data could not be loaded. Refresh the page after creating a forecast.";
+                });
+        }
+    </script>
+</body>
+</html>
