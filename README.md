@@ -1,58 +1,79 @@
 
------
 
-# 🌏 Geospatial Analysis: Economics & Geography
+---
 
-This repository explores the intersection of **spatial data science** and **economic analysis**. It utilizes GeoJSON datasets and GIS software to visualize regional economic trends, specifically focusing on Indian states and demographic distributions.
+# 🌍 Geospatial Analysis & Economic Forecasting
 
------
+This repository is a comprehensive toolkit for spatial economic analysis. It evolved from standalone Python visualization scripts into a full-stack **Geospatial Economic Forecasting Dashboard**.
 
-## 🚀 Key Features
+## 🏗 Project Structure
 
-  * **Interactive Visualization**: Leverages the `Altair` library for declarative statistical visualization.
-  * **Regional Economics**: Mapping economic indicators across Indian states using high-fidelity GeoJSON data.
-  * **Data Processing**: Workflows for cleaning and merging geographic boundaries with tabular economic datasets.
+The project is divided into two main components:
 
-## 📊 Visualizations Included
+1. **[Geospatial Economic Forecasting Dashboard](https://www.google.com/search?q=./geospatial-economic-forecasting/) (Django App)**:
+* A web-based interface for state and district-level forecasting.
+* Features interactive Leaflet maps, SQLite persistence, and plain-language economic interpretations.
+* Allows manual entry of NDVI, Nightlight intensity, and Capital Formation proxies.
 
-| File | Description |
-| :--- | :--- |
-| **`INDIA_STATES.geojson`** | The spatial backbone of the project, providing precise state boundaries. |
-| **`altair indian states.py`** | Python script generating interactive maps and choropleths. |
-| **`altair_bar_chart.html`** | Statistical breakdown of economic metrics by region. |
-| **`altair_scatter_plot.html`** | Correlation analysis between different geographic variables. |
 
------
+2. **Standalone Geospatial Visualizations (Python/Altair)**:
+* `altair indian states.py`: Scripts to generate high-fidelity, interactive choropleth maps.
+* Pre-rendered reports: `altair_bar_chart.html` and `altair_scatter_plot.html`.
 
-## 🛠️ Tech Stack
 
-  * **Language**:  3.x
-  * **Visualization**:  (Vega-Lite)
-  * **Data Format**:  / GIS Standard
 
------
+---
 
-## ⚡ Quick Start
+## 🚀 Getting Started
 
-1.  **Clone the Repo**:
-    ```bash
-    git clone https://github.com/Vipeen21/Geospatial-Analysis.git
-    cd Geospatial-Analysis
-    ```
-2.  **Install Dependencies**:
-    ```bash
-    pip install altair pandas vegali_datasets
-    ```
-3.  **Run the Analysis**:
-    Execute the Python scripts to generate `.html` visual reports:
-    ```bash
-    python "altair indian states.py"
-    ```
+### Option A: Run the Interactive Dashboard (Recommended)
 
------
+Navigate to the application folder and initialize the Django server:
 
-## 🎯 Use Case: Economic Mapping
+```bash
+cd geospatial-economic-forecasting
+python manage.py migrate
+python manage.py runserver 127.0.0.1:8002
 
-By blending `GeoJSON` boundaries with economic data (like GDP per state, literacy rates, or industrial output), this project demonstrates how geographic location influences economic outcomes—a key component of **Regional Science**.
+```
 
------
+*View the detailed [Application README](https://www.google.com/search?q=./geospatial-economic-forecasting/README.md) for usage instructions.*
+
+### Option B: Generate Static Maps
+
+To run the analysis scripts directly:
+
+```bash
+python "altair indian states.py"
+
+```
+
+---
+
+## 📊 Core Variables & Methodology
+
+The forecasting logic (found in `tasks.py`) utilizes three primary pillars of regional economic health:
+
+| Variable | Description | Proxy For |
+| --- | --- | --- |
+| **NDVI** | Normalized Difference Vegetation Index | Agricultural health and ecological productivity. |
+| **Nightlight** | Satellite-derived nighttime radiance | Urbanization, electrification, and industrial activity. |
+| **Capital Formation** | Gross Fixed Capital Formation (GFCF) | Long-term investment and infrastructure growth. |
+
+> **Note:** The current forecasting model uses a weighted linear formula as a prototype methodology. It is designed to be replaced with trained Machine Learning models in future iterations.
+
+---
+
+## 🛠 Tech Stack
+
+* **Web Framework:** Django (Python)
+* **Frontend Maps:** Leaflet.js (Dashboard) & Altair/Vega-Lite (Static)
+* **Geospatial Data:** GeoJSON (India State/District boundaries)
+* **Data Handling:** Pandas, Numpy
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
+
+---
+
